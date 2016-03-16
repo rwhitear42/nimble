@@ -242,7 +242,7 @@ public class NimbleModule extends AbstractCloupiaModule {
 		
 		// This is mandatory,under which pod type , the new account type is
 		// applicable.
-		entry.setPodTypes(new String[] { "NimbleStack" } );
+		entry.setPodTypes(new String[] { "SmartStack" } );
 		
 		
 		// This is optional, dependents on the need of session for collecting
