@@ -48,6 +48,8 @@ public class NimbleCreateVolumeTask extends AbstractTask {
 		boolean	dataEncryption	= config.getVolumeDataEncryption();
 		boolean	cachePinning	= config.getVolumeCachePinning();
 		
+		String targetName = "";
+		
 	
 		// Retrieve the performance policy ID for perfPolicy.
 		String perfPolicyID = "";
@@ -134,6 +136,10 @@ public class NimbleCreateVolumeTask extends AbstractTask {
 		for( int i = 0; i < volDetail.getData().size(); i++ ) {
 			
 			volMap.put( volDetail.getData().get(i).getName(), volDetail.getData().get(i).getName() );
+
+			// Take advantage of the loop here to set the new target_name (iSCSI IQN) of the new volume.
+			if( volDetail.getData().get(i).getName().equals(config.getVolumeName()) ) 
+				targetName = volDetail.getData().get(i).getTarget_name();
 			
 		}
 
@@ -149,7 +155,8 @@ public class NimbleCreateVolumeTask extends AbstractTask {
 		
         try
         {
-            context.saveOutputValue(NimbleConstants.NIMBLE_VOLUME_NAME, config.getVolumeName());
+            context.saveOutputValue(NimbleConstants.NIMBLE_VOLUME_NAME, config.getVolumeName() );
+            context.saveOutputValue(NimbleConstants.NIMBLE_TARGET_NAME, targetName );
 
         } catch (Exception e)
         {
@@ -169,11 +176,12 @@ public class NimbleCreateVolumeTask extends AbstractTask {
 
 	@Override
 	public TaskOutputDefinition[] getTaskOutputDefinitions() {
-		TaskOutputDefinition[] ops = new TaskOutputDefinition[1];
+		TaskOutputDefinition[] ops = new TaskOutputDefinition[2];
 		//NOTE: If you want to use the output of this task as input to another task. Then the second argument 
 		//of the output definition MUST MATCH the type of UserInputField in the config of the task that will
 		//be receiving this output.  Take a look at HelloWorldConfig as an example.
 		ops[0] = new TaskOutputDefinition( NimbleConstants.NIMBLE_VOLUME_NAME, NimbleConstants.GENERIC_TEXT_INPUT, "Three" );
+		ops[1] = new TaskOutputDefinition( NimbleConstants.NIMBLE_TARGET_NAME, NimbleConstants.GENERIC_TEXT_INPUT, "Three" );
 		return ops;
 	}
 }

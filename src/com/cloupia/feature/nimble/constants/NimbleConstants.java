@@ -58,5 +58,6 @@ public class NimbleConstants {
 	public static final String NIMBLE_VOLUME_COLLECTION_NAME = "NIMBLE_VOLUME_COLLECTION_NAME";
 	public static final String NIMBLE_INITIATOR_GROUP_NAME = "NIMBLE_INITIATOR_GROUP_NAME";
 	public static final String NIMBLE_INITIATOR_NAME = "NIMBLE_INITIATOR_NAME";
+	public static final String NIMBLE_TARGET_NAME = "NIMBLE_TARGET_NAME";
 	
 }
