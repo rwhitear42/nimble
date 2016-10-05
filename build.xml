@@ -2,12 +2,30 @@
 	<property name="classesdir" value="${basedir}/bin" />
 	<property name="moduleID" value="nimble" />
 	
+
 	<target name="clean">
 		<delete dir="${basedir}/build" />
-		<delete file="${basedir}/feature-${moduleID}.zip" />
+		<delete dir="${basedir}/bin" />
+		<delete file="${basedir}/feature-{moduleID}.zip" />
 	</target>
-	
-	<target name="build" depends="clean, jdoEnhance">
+	<target name="compile" description="compile the source">
+		<mkdir dir="${basedir}/bin" />
+                <copy file="${basedir}/src/device_icon_mapping.xml" tofile="${basedir}/bin/device_icon_mapping.xml" />
+                <copy file="${basedir}/src/module.properties" tofile="${basedir}/bin/module.properties" />
+
+		<javac srcdir="${basedir}/src" destdir="${classesdir}">
+			<classpath>
+				<pathelement path="${classpath}"/>
+				<pathelement location="lib/logging/log4j-1.2.15.jar"/>
+				<pathelement path="${classesdir}"/>
+				<fileset dir="${basedir}/lib">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="build" depends="clean, compile, jdoEnhance">
 		<delete dir="${basedir}/build" />
 		<mkdir dir="${basedir}/build" />
 		<jar destfile="${basedir}/build/feature-${moduleID}.jar" update="true">
@@ -36,15 +54,6 @@
 			<fileset dir="${basedir}/poddefinition" includes="**"/> 
 		</copy>
 		<mkdir dir="${basedir}/build/${moduleID}/lib" />
-		<!-- this is how you copy a folder of jars to be part of your module -->
-        <copy todir="${basedir}/build/${moduleID}/lib">
-	        <fileset dir="${basedir}/lib">
-                <include name="jsch/**"/>
-	        	<include name="apache-commons-httpclient/**"/>
-	        	<include name="ucsd-httprequest/**"/>
-	        	<include name="nimblerest-rwhitear/**"/>
-	        </fileset>
-        </copy>
 		<zip destfile="${basedir}/feature-${moduleID}.zip" basedir="${basedir}/build">
 		</zip>
 		<echo message="${moduleID} feature is located at ${basedir}/feature-${moduleID}.zip"></echo>
@@ -64,5 +73,10 @@
 				</fileset>
 			</classpath>
 		</java>
+	</target>
+	<target name="verify">
+	        <exec dir="${basedir}" executable="python" failonerror="true">
+	            <arg line="../ucsd-troubleshooter/SHOOTER.py" />
+        	</exec>
 	</target>
 </project>
